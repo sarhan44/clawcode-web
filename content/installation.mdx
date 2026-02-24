@@ -1,0 +1,40 @@
+# Installation
+
+ClawCode requires **Node.js >= 18**. The installer checks this and exits with a clear message if the version is too old.
+
+## Mac / Linux (curl)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sarhan44/clawcode/main/install.sh | bash
+```
+
+## Mac / Linux (wget)
+
+```bash
+wget -qO- https://raw.githubusercontent.com/sarhan44/clawcode/main/install.sh | bash
+```
+
+## Windows (PowerShell)
+
+Run in PowerShell:
+
+```powershell
+iwr https://raw.githubusercontent.com/sarhan44/clawcode/main/install.ps1 -useb | iex
+```
+
+This downloads the repository, runs `npm install`, `npm run build`, and then `npm install -g .` so that `clawcode` is available globally. On Unix, if global install fails due to permissions, the script suggests re-running with `sudo` or configuring a user-level npm prefix.
+
+## After install
+
+```bash
+clawcode
+```
+
+On first run, complete onboarding (choose project and configure at least one AI provider), or skip and run `clawcode config` later. Then use the TUI or run tasks from the command line.
+
+## Node requirement
+
+- **Node.js 18** or newer is required.
+- The install script checks the Node version and prints an error if it is below 18.
+
+Install Node from [nodejs.org](https://nodejs.org/) or your package manager (e.g. `nvm`, `fnm`, Homebrew, Chocolatey) before running the installer if needed.

@@ -1,0 +1,31 @@
+# Introduction
+
+Welcome to **ClawCode** — an AI coding agent that runs in your terminal.
+
+ClawCode scans your project (respecting `.gitignore`), sends minimal context to your chosen LLM (Azure OpenAI, Groq, or Google Gemini), and applies structured patches with backups and confirmation. Persistent memory and an interactive TUI keep you in flow.
+
+### 💖 Open Source & Free
+ClawCode is built for the developer community. It is **100% free forever**, completely **open-source**, and released under the **MIT License**. There are no paywalls, subscriptions, or hidden premium tiers. Contributions are always welcome on [GitHub](https://github.com/sarhan44/clawcode).
+
+## Quick links
+
+- [Getting Started](/docs/getting-started) — What is ClawCode, how it works, first run
+- [Installation](/docs/installation) — One-line install (curl, wget, PowerShell)
+- [Providers](/docs/providers) — Azure, Groq, Gemini; onboarding
+- [Memory](/docs/memory) — Persistent context, `~/.clawcode`
+- [TUI](/docs/tui) — Interactive UI, activity feed, shell mode
+- [Architecture](/docs/architecture) — High-level design, events, provider registry
+
+## Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sarhan44/clawcode/main/install.sh | bash
+```
+
+Then run:
+
+```bash
+clawcode
+```
+
+On first run, ClawCode guides you through configuring an AI provider. You can also run `clawcode config` anytime to add or update providers.

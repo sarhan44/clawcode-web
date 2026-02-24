@@ -1,0 +1,63 @@
+# Architecture
+
+This page gives a high-level overview of how ClawCode is built. For full detail and algorithms, see the [ARCHITECTURE.md](https://github.com/sarhan44/clawcode/blob/main/ARCHITECTURE.md) in the repository.
+
+## High-level architecture
+
+ClawCode is a **CLI-first** agent: the entry point parses arguments, runs onboarding if needed, then branches into **REPL**, **TUI**, or **single/multi task** (console) mode. In every case, a “task” is executed by:
+
+1. Resolving the AI provider (from config, flag, or prompt)
+2. Scanning the project and selecting relevant files
+3. Loading global and session memory and building a memory context string
+4. Building system and user prompts and calling the LLM once
+5. Parsing the JSON plan (analysis, files_to_edit, patches, commands)
+6. Building a content map, computing patch results, and building diffs
+7. (Optional) Confirming and applying patches, then confirming and running commands
+8. Saving session memory and (in TUI) emitting success/error events
+
+So the **core loop** is single-shot: one LLM call per task, then apply and optional commands. There is no built-in multi-step “auto-fix” loop in the current design; the status bar’s “Iteration” is reserved for future use.
+
+## Event-driven system
+
+When running in **TUI mode**, the agent uses an **event emitter** so the UI can show progress without coupling the runner to the renderer. Events include:
+
+- **planning** — Task accepted, scan/plan started
+- **read_file** — A file is being read for the plan
+- **write_file** — A patch is being written to disk
+- **run_tests** — A command (e.g. tests) is being run
+- **diffs** — Diff content is ready for display
+- **success** / **error** — Task finished with a summary or error message
+
+The TUI subscribes to these events and maps them to the **activity feed** (icons, spinners, done/error state) and **diff view**. The same runner is used for console mode; when no emitter is passed, it uses spinners and console output instead.
+
+## Memory system
+
+- **Config** — `~/.clawcode/config.json` holds provider credentials and default provider. No `.env` or `process.env` is used for API keys.
+- **Global memory** — `~/.clawcode/memory/global.json` stores optional project summaries (e.g. framework, test command, architecture) keyed by project path.
+- **Session memory** — `~/.clawcode/memory/sessions/<hash>.json` stores per-project last tasks, recent files, and agent notes (with caps). The hash is derived from the normalized project root.
+- **Context building** — Before each LLM call, ClawCode loads global and session memory, then builds a short text block (e.g. “Project context: …”, “Recent tasks: …”, “Recently touched files: …”, “Agent notes: …”) and appends it to the user prompt. After a successful run, it appends/caps the session arrays and writes the session file.
+
+So the **memory system** is file-based, model-agnostic, and survives restarts and provider switches.
+
+## Provider registry
+
+Provider selection and configuration are driven by a **provider registry** that defines, for each provider (Azure, Groq, Gemini):
+
+- **Metadata** — id, label, list of prompts (key, label, default, mask for secrets)
+- **Validation** — Check that required fields are present and valid
+- **Credentials building** — Turn raw input into the shape expected by the LLM clients
+
+Onboarding and `clawcode config` use this registry to prompt for credentials, validate them, and write to `config.json`. The LLM layer then reads config and dispatches to the correct client (Azure, Groq, or Gemini) based on the selected provider.
+
+## File and module layout
+
+- **cli.ts** — Entry point, argv parsing, branching (config, version, onboarding, REPL, UI, task loop)
+- **agent/** — Runner (scan → plan → patches), executor (content map, apply, diff), selector (relevance), events (emitter)
+- **cli/** — Flow (executeTask, executeTaskWithSummary), onboarding, provider selection, project selection, REPL, cache, console UI
+- **llm/** — Provider dispatch, Azure/Groq/Gemini clients, prompts, types, plan parser
+- **config/** — Config dir, provider registry, types
+- **memory/** — Memory manager, project hasher
+- **ui/** — Ink TUI (App, Logo, Header, ActivityFeed, StatusBar, InputPrompt, DiffView)
+- **utils/** — Scanner (gitignore-aware), patch, diff, backup
+
+For full pipeline, algorithms (file selection, patch application, diff building, memory caps), and data structures, see the repository’s **ARCHITECTURE.md**.

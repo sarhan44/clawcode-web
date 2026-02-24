@@ -1,0 +1,49 @@
+# TUI
+
+ClawCode’s default mode is an **interactive terminal UI (TUI)** built with Ink. When you run `clawcode` with no task argument, the TUI opens after you select a project and (if needed) an AI provider.
+
+## Overview
+
+The TUI shows:
+
+- **Logo** — ASCII “CLAWCODE” and “AI Coding Agent” tagline
+- **Header** — One line: provider, project name, and current Git branch
+- **Activity feed** — Scrollable list of steps: Planning, Reading file X, Writing patch to Y, Diff ready, Success/Error. Active steps show a spinner; completed steps show a check or error icon.
+- **Diff view** — When the agent produces patches, a unified-style diff is shown (red for removals, green for additions).
+- **Status bar** — Mode (e.g. Auto-fix ON/OFF), Iteration, Model name, Memory (active).
+- **Input prompt** — `clawcode ❯` where you type a task and press Enter to run. Ctrl+↑/↓ scrolls the activity feed.
+
+You don’t need to confirm apply/commands in the TUI when running from here; the flow uses `--yes`-style behavior so you can keep entering tasks.
+
+## Activity panel
+
+The **activity feed** lists the last N steps for the current run. Each step has an icon and short text (e.g. “Planning”, “Reading src/index.ts”, “Writing patch to src/index.ts”, “Diff ready”, “Success”). Steps that are in progress show a spinner; finished steps show a success or error symbol. The panel is scrollable (e.g. Ctrl+↑/↓) so you can review longer runs.
+
+## Status bar
+
+The **status bar** is a single line at the bottom showing:
+
+- **Mode** — Whether auto-fix (or similar) is on or off
+- **Iteration** — Current iteration if the agent supports multi-step loops (often “—” if not used)
+- **Model** — The active model name (e.g. `openai/gpt-oss-120b`, `gpt-4o`, `gemini-2.0-flash`)
+- **Memory** — Indicates that persistent memory is active
+
+This gives you at-a-glance context for the current session.
+
+## Shell mode
+
+If you prefer a persistent prompt without the full TUI, run:
+
+```bash
+clawcode shell
+```
+
+This starts **REPL mode**: a `clawcode>` prompt where you type one task per line. Each line is run as a task (with confirmations unless you use flags). Special commands:
+
+- **`:exit`**, **`:quit`**, **`:q`** — Exit the shell
+- **`:provider`** — Switch AI provider (Azure / Groq / Gemini)
+- **`:project`** — Change project directory
+- **`:clear`** — Clear screen
+- **`:help`**, **`:h`** — Show help
+
+So you can use either the **TUI** (`clawcode`) or **shell** (`clawcode shell`) depending on whether you want the full activity feed and diff view or a minimal prompt.

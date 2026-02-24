@@ -1,0 +1,45 @@
+# Getting Started
+
+## What is ClawCode?
+
+ClawCode is a **terminal-first AI coding agent**. You give it a task in natural language; it scans your project, picks relevant files, asks your chosen LLM for a structured plan (analysis, file list, patches, optional commands), shows you a diff, and applies changes only after you confirm. Backups are created before any edit.
+
+## How it works
+
+1. **Scan** — Lists text files under the project root, respecting `.gitignore` and built-in ignore patterns.
+2. **Select** — Picks a small set of relevant files (by task keywords and size) so only minimal context is sent.
+3. **Plan** — Sends task + file list + selected file contents (and optional memory context) to the LLM. The model returns a single JSON object: `analysis`, `files_to_edit`, `patches`, and optional `commands`.
+4. **Review** — You see the analysis, files to edit, and a diff of all patches (in the TUI or in the console).
+5. **Confirm** — You choose whether to apply patches and whether to run suggested commands (e.g. tests).
+6. **Apply** — Touched files are backed up to `.coding-agent-backups/`, then patches are applied. Session memory is updated for the project.
+
+## Example commands
+
+```bash
+# Open the interactive TUI (default)
+clawcode
+
+# Run a single task in the current directory
+clawcode "Add unit tests for the login function"
+
+# Run a task in another directory
+clawcode --dir ./my-app "Fix typo in README"
+
+# Use a specific provider and skip confirmations
+clawcode --provider groq "Refactor auth module" --yes
+
+# Preview changes only (no writes)
+clawcode --dry-run "Add error handling"
+```
+
+## First-run onboarding
+
+When you run `clawcode` for the first time and no AI provider is configured yet, ClawCode runs **onboarding**:
+
+1. You see a short welcome message.
+2. You can choose an AI provider (Azure OpenAI, Groq, or Google Gemini) or **Skip** to configure later.
+3. If you pick a provider, you're prompted for credentials (e.g. API key, endpoint for Azure). Inputs are validated.
+4. You can add another provider or finish. Config is saved to `~/.clawcode/config.json`.
+5. After that, the TUI opens (or you run your task). You can change or add providers anytime with `clawcode config`.
+
+No `.env` or environment variables are required — everything is stored in config and managed via onboarding or `clawcode config`.

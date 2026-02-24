@@ -1,0 +1,48 @@
+# Providers
+
+ClawCode supports three AI providers. You configure them via onboarding or `clawcode config`; credentials are stored in `~/.clawcode/config.json`. ClawCode does **not** read provider credentials from `.env` or environment variables.
+
+## Azure OpenAI
+
+- **Endpoint** — e.g. `https://<resource>.openai.azure.com`
+- **API key** — Your Azure OpenAI API key
+- **Deployment** — Deployment name (default: `gpt-4o`)
+
+Configure with `clawcode config` by choosing **Azure OpenAI** and entering these values. They are saved under `config.providers.azure`.
+
+## Groq
+
+- **API key** — Your Groq API key
+- **Model** — Optional; default is `openai/gpt-oss-120b`
+
+Configure with `clawcode config` by choosing **Groq** and entering your API key. Optionally set a model; it is stored in config.
+
+## Google Gemini
+
+- **API key** — Your Gemini API key
+- **Model** — Optional; default is `gemini-2.0-flash`
+
+Configure with `clawcode config` by choosing **Google Gemini** and entering your API key. Optionally set a model.
+
+## How onboarding works
+
+On **first run** (when no provider is configured):
+
+1. ClawCode shows a welcome message and asks you to **select a provider** or **Skip**.
+2. If you skip, you can run `clawcode config` later to add providers.
+3. If you select a provider, you're prompted for each credential (API key, endpoint, deployment, etc.). Secrets are masked when typed.
+4. Inputs are validated; invalid entries are rejected and you can try again.
+5. You can **add another provider** or finish. Config is written to `~/.clawcode/config.json` and a default provider is set.
+6. After that, the TUI or task flow continues.
+
+You can switch provider in the TUI (or when prompted in console mode) and override with `--provider azure` / `--provider groq` / `--provider gemini` on the command line.
+
+## Adding or updating providers
+
+Run:
+
+```bash
+clawcode config
+```
+
+You can add a new provider or re-enter credentials for an existing one. The last chosen provider is remembered for the session and can be set as default in config.

@@ -1,0 +1,28 @@
+# Memory
+
+ClawCode uses **persistent memory** so that context survives restarts and model switches. Memory is stored under `~/.clawcode` and is injected into the user prompt when running a task.
+
+## Where config and memory are stored
+
+- **Config** — `~/.clawcode/config.json` (provider credentials, default provider)
+- **Global memory** — `~/.clawcode/memory/global.json` (e.g. project summaries: framework, test command, architecture)
+- **Session memory** — `~/.clawcode/memory/sessions/<projectHash>.json` (per-project: last tasks, recent files, agent notes)
+
+The project hash is derived from the normalized project root path (e.g. first 16 characters of SHA256), so each project has its own session file.
+
+## How persistent memory works
+
+- **Global memory** can store a short summary per project (framework, test command, architecture). This is optional and can be updated by the CLI or agent.
+- **Session memory** is updated after each successful run:
+  - **Last tasks** — The task you just ran is prepended (capped at 10).
+  - **Recent files** — Files touched by the last run are merged with existing recent files (capped at 30).
+  - **Agent notes** — Optional notes from the LLM plan (e.g. `agent_notes`) are appended (capped at 20).
+
+When ClawCode runs a task, it loads both global and session memory for the current project, builds a short **memory context** string (e.g. “Project context: …”, “Recent tasks: …”, “Recently touched files: …”, “Agent notes: …”), and appends it to the user prompt. The LLM can use this to stay consistent across runs.
+
+## Commands related to memory
+
+- **`clawcode config`** — Manages provider credentials (stored in config); does not edit memory files directly.
+- Memory is **written automatically** after each successful task run; there is no separate “memory command” to invoke. To inspect or reset memory, you can edit or remove the JSON files under `~/.clawcode/memory/` manually if needed.
+
+Summary: config lives in `~/.clawcode/config.json`, and persistent context lives under `~/.clawcode/memory/`. ClawCode loads and saves this automatically; you only need to run tasks and optionally `clawcode config` for providers.
