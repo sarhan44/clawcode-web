@@ -26,11 +26,13 @@ export default function BuiltBy() {
                     </div>
 
                     <div>
-                        <h3 className="text-xl font-bold text-white mb-1">
-                            Built by <a href="https://github.com/sarhan44" target="_blank" rel="noopener noreferrer" className="text-[#00E5FF] hover:underline underline-offset-4 flex items-center justify-center gap-1">Sarhan Khan <ExternalLink className="h-3.5 w-3.5" /></a>
-                        </h3>
+                        <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-2">Why ClawCode Exists</p>
+                        <h2 className="text-xl font-bold text-white mb-1">
+                            Built by <a href="https://github.com/sarhan44" target="_blank" rel="noopener noreferrer" className="text-[#00E5FF] hover:underline underline-offset-4 inline-flex items-center gap-1">Sarhan Khan <ExternalLink className="h-3.5 w-3.5" /></a>
+                        </h2>
                         <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
-                            Software Engineer passionate about developer tooling, AI pipelines, and crafting seamless terminal experiences.
+                            Software engineer building AI-native apps & tools. ClawCode was created
+                            to give every developer access to powerful AI coding workflows — without paywalls.
                         </p>
                     </div>
                 </motion.div>

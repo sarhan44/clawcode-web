@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Terminal, Play, Settings } from 'lucide-react';
+import { Terminal, Play, Settings, Copy, Check } from 'lucide-react';
 
 const steps = [
     {
@@ -23,6 +23,37 @@ const steps = [
         code: null,
     },
 ];
+
+const CommandBox = ({ code }: { code: string }) => {
+    const [copied, setCopied] = React.useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy code:', err);
+        }
+    };
+
+    return (
+        <div className="font-mono text-sm p-4 rounded-xl bg-[#0A0D14] border border-gray-800 text-gray-300 relative group overflow-hidden flex items-center justify-between transition-all hover:border-gray-700">
+            <div className="flex items-center overflow-hidden">
+                <span className="text-gray-600 select-none mr-3">$</span>
+                <code className="select-all break-all text-xs text-[#00E5FF] opacity-90">{code}</code>
+            </div>
+            <button
+                onClick={handleCopy}
+                className="ml-4 p-2 rounded-lg bg-gray-800/30 hover:bg-gray-800/60 text-gray-500 hover:text-[#00E5FF] transition-all border border-transparent hover:border-gray-700"
+                title="Copy to clipboard"
+            >
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            </button>
+            <div className="absolute inset-y-0 right-10 w-12 bg-gradient-to-l from-[#0A0D14] to-transparent pointer-events-none" />
+        </div>
+    );
+};
 
 export default function SetupSteps() {
     return (
@@ -54,12 +85,7 @@ export default function SetupSteps() {
                                     <span className="text-gray-500 mr-2">Step {idx + 1}</span> {step.title}
                                 </h3>
                                 <p className="text-gray-400 mb-4">{step.desc}</p>
-                                {step.code && (
-                                    <div className="font-mono text-sm p-4 rounded-xl bg-[#0A0D14] border border-gray-800 text-gray-300 relative group overflow-hidden">
-                                        <span className="text-gray-600 select-none mr-3">$</span>
-                                        <code className="select-all break-all text-xs text-[#00E5FF]">{step.code}</code>
-                                    </div>
-                                )}
+                                {step.code && <CommandBox code={step.code} />}
                             </div>
                         </motion.div>
                     ))}

@@ -30,7 +30,7 @@ export default function HowItWorks() {
             <div className="mx-auto max-w-6xl">
                 <div className="text-center mb-16 md:mb-20">
                     <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-                        How It Works
+                        How ClawCode Works
                     </h2>
                     <p className="mt-4 text-gray-400 text-lg md:text-xl">
                         From natural language to applied commit in three simple steps.

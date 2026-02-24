@@ -1,4 +1,5 @@
 import { generateStaticParamsFor, importPage } from 'nextra/pages'
+import Pre from '@/components/Pre'
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
@@ -21,7 +22,7 @@ export default async function DocsPage(props: {
   const { default: MDXContent } = await importPage(pathSegments)
   return (
     <article className="prose prose-invert prose-neutral max-w-full dark:prose-invert">
-      <MDXContent {...props} params={params} />
+      <MDXContent {...props} params={params} components={{ pre: Pre }} />
     </article>
   )
 }
